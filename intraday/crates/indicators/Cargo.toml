@@ -1,0 +1,9 @@
+[package]
+name = "indicators"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+core-types = { workspace = true }
+chrono = { workspace = true }

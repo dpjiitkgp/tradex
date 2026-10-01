@@ -1,0 +1,9 @@
+# Manual correction on top of the fetched NSE holiday cache
+# (data/nse_holidays_cache.json). Use this if a fetch is stale or wrong —
+# do not hand-maintain the full holiday list here.
+#
+# add = ["2026-01-26"]
+# remove = ["2026-05-01"]
+
+add = []
+remove = []

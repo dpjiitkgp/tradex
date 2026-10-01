@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>papertrader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">◆</span>
+      <span>papertrader</span>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-tab="overview">Overview</button>
+      <button class="tab" data-tab="trigger">Trigger Backtest</button>
+      <button class="tab" data-tab="runs">Runs</button>
+      <button class="tab" data-tab="compare">Compare</button>
+      <button class="tab" data-tab="stock">Stock Explorer</button>
+    </nav>
+    <div class="coverage-pill" id="coverage-pill">loading coverage…</div>
+  </header>
+
+  <main>
+    <!-- ============================== OVERVIEW ============================== -->
+    <section class="panel active" id="panel-overview">
+      <div class="grid-2">
+        <div class="card">
+          <h2>Data coverage</h2>
+          <div id="overview-coverage" class="stat-block">—</div>
+        </div>
+        <div class="card">
+          <h2>Runs on record</h2>
+          <div id="overview-run-count" class="stat-block">—</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Recent runs</h2>
+          <button class="btn btn-ghost" data-tab-link="runs">View all →</button>
+        </div>
+        <div id="overview-recent-runs" class="table-wrap"></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Best strategy × stock combinations</h2>
+          <span class="muted small">across every run, sorted by avg R</span>
+        </div>
+        <div id="overview-best-combos" class="table-wrap"></div>
+      </div>
+    </section>
+
+    <!-- ============================== TRIGGER ============================== -->
+    <section class="panel" id="panel-trigger">
+      <form id="trigger-form">
+        <div class="card">
+          <h2>1. What to run</h2>
+          <div class="field-row">
+            <label>Label
+              <input type="text" name="label" placeholder="e.g. orb-relvol-2x" />
+            </label>
+            <label>From
+              <input type="date" name="from" required />
+            </label>
+            <label>To
+              <input type="date" name="to" required />
+            </label>
+          </div>
+          <div class="field-row">
+            <label>Scope
+              <select name="scope_kind" id="scope-kind">
+                <option value="all">All stocks (full curated universe)</option>
+                <option value="sector">All stocks in a sector</option>
+                <option value="symbol">A specific stock</option>
+              </select>
+            </label>
+            <label id="scope-sector-wrap" hidden>Sector
+              <select name="scope_sector" id="scope-sector"></select>
+            </label>
+            <label id="scope-symbol-wrap" hidden>Symbol
+              <input type="text" name="scope_symbol" id="scope-symbol" placeholder="e.g. INFY" list="symbol-list" autocomplete="off" />
+              <datalist id="symbol-list"></datalist>
+            </label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>2. Stock-picking strategies</h2>
+            <span class="muted small">hold these fixed while you tune exit/risk below, or vice versa</span>
+          </div>
+          <div class="strategy-grid">
+            <fieldset class="strategy-card" data-strategy="orb">
+              <legend><label><input type="checkbox" name="orb_enabled" checked /> Opening Range Breakout</label></legend>
+              <p class="muted small">09:15–09:45 · breaks the opening range with volume confirmation</p>
+              <label>Relative-volume lookback (bars)
+                <input type="number" name="orb_relative_volume_period" min="1" step="1" />
+              </label>
+              <label>Min relative volume (× baseline)
+                <input type="number" name="orb_min_relative_volume" min="0" step="0.1" />
+              </label>
+            </fieldset>
+
+            <fieldset class="strategy-card" data-strategy="vwap_trend">
+              <legend><label><input type="checkbox" name="vwap_trend_enabled" checked /> VWAP Trend Follow</label></legend>
+              <p class="muted small">09:45–11:30 · EMA crossover + VWAP side + opening-range bias</p>
+              <label>Fast EMA
+                <input type="number" name="vwap_trend_fast_ema" min="1" step="1" />
+              </label>
+              <label>Slow EMA
+                <input type="number" name="vwap_trend_slow_ema" min="1" step="1" />
+              </label>
+              <label>Relative-volume lookback (bars)
+                <input type="number" name="vwap_trend_relative_volume_period" min="1" step="1" />
+              </label>
+              <label>Min relative volume (× baseline)
+                <input type="number" name="vwap_trend_min_relative_volume" min="0" step="0.1" />
+              </label>
+            </fieldset>
+
+            <fieldset class="strategy-card" data-strategy="momentum_breakout">
+              <legend><label><input type="checkbox" name="momentum_breakout_enabled" checked /> Momentum Breakout</label></legend>
+              <p class="muted small">11:30–close · bar move vs ATR + relative volume, edge-triggered</p>
+              <label>ATR period
+                <input type="number" name="momentum_breakout_atr_period" min="1" step="1" />
+              </label>
+              <label>Min move (× ATR)
+                <input type="number" name="momentum_breakout_min_atr_multiple" min="0" step="0.1" />
+              </label>
+              <label>Relative-volume lookback (bars)
+                <input type="number" name="momentum_breakout_relative_volume_period" min="1" step="1" />
+              </label>
+              <label>Min relative volume (× baseline)
+                <input type="number" name="momentum_breakout_min_relative_volume" min="0" step="0.1" />
+              </label>
+            </fieldset>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>3. Exit / risk (applies to every enabled strategy above)</h2>
+            <span class="muted small">hold this fixed while you tune strategies above, or vice versa</span>
+          </div>
+          <div class="field-row">
+            <label>Hard stop (% of entry)
+              <input type="number" name="risk_pct_display" min="0" step="0.01" />
+              <span class="hint">stored as a fraction — 0.25 here means 0.25%</span>
+            </label>
+            <label>Min reward:risk before trailing
+              <input type="number" name="min_reward_multiple" min="0" step="0.1" />
+            </label>
+            <label>Trail policy
+              <select name="trail_policy" id="trail-policy">
+                <option value="percent_from_peak">% from peak</option>
+                <option value="atr_multiple">ATR multiple (chandelier)</option>
+                <option value="vwap_cross">VWAP cross</option>
+              </select>
+            </label>
+            <label id="trail-param-wrap">Trail param <span class="hint" id="trail-param-hint"></span>
+              <input type="number" name="trail_param_display" min="0" step="0.01" />
+            </label>
+          </div>
+          <div class="field-row">
+            <label>Capital per trade (₹)
+              <input type="number" name="capital_per_trade" min="0" step="1000" />
+            </label>
+            <label>Max concurrent positions
+              <input type="number" name="max_concurrent_positions" min="1" step="1" />
+            </label>
+            <label>Daily loss cap (% of allocated capital)
+              <input type="number" name="daily_loss_cap_pct_display" min="0" step="0.5" />
+            </label>
+          </div>
+          <div class="field-row">
+            <label>EOD square-off (IST)
+              <input type="time" name="eod_square_off" />
+            </label>
+            <label>Max hold (minutes, 0 = no cap)
+              <input type="number" name="max_hold_minutes" min="0" step="5" />
+            </label>
+            <label>Exit ATR period
+              <input type="number" name="exit_atr_period" min="1" step="1" />
+            </label>
+          </div>
+        </div>
+
+        <div class="trigger-actions">
+          <button type="submit" class="btn btn-primary" id="trigger-submit">Run backtest</button>
+          <span class="muted small" id="trigger-hint">Loads current config/default.toml as a starting point — edit anything above before running.</span>
+        </div>
+      </form>
+
+      <div class="card" id="job-progress-card" hidden>
+        <h2>Progress</h2>
+        <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill"></div></div>
+        <div id="progress-message" class="mono small muted">starting…</div>
+        <div id="job-result"></div>
+      </div>
+    </section>
+
+    <!-- ============================== RUNS ============================== -->
+    <section class="panel" id="panel-runs">
+      <div class="card">
+        <div class="card-head">
+          <h2>All runs</h2>
+          <button class="btn btn-ghost" id="runs-refresh">Refresh</button>
+        </div>
+        <div id="runs-table" class="table-wrap"></div>
+      </div>
+      <div class="card" id="run-detail-card" hidden>
+        <div class="card-head">
+          <h2 id="run-detail-title">Run detail</h2>
+          <label class="inline-toggle"><input type="checkbox" id="run-detail-by-instrument" /> by instrument</label>
+        </div>
+        <div id="run-detail-table" class="table-wrap"></div>
+      </div>
+    </section>
+
+    <!-- ============================== COMPARE ============================== -->
+    <section class="panel" id="panel-compare">
+      <div class="card">
+        <div class="card-head">
+          <h2>Pick runs to compare</h2>
+          <button class="btn btn-primary" id="compare-go">Compare</button>
+        </div>
+        <div id="compare-picker" class="table-wrap"></div>
+      </div>
+      <div class="card" id="compare-result-card" hidden>
+        <h2>Side by side, per strategy</h2>
+        <div id="compare-result" class="table-wrap"></div>
+      </div>
+    </section>
+
+    <!-- ============================== STOCK EXPLORER ============================== -->
+    <section class="panel" id="panel-stock">
+      <div class="card">
+        <h2>Pick a stock</h2>
+        <div class="field-row">
+          <label>Symbol
+            <input type="text" id="stock-search" placeholder="e.g. INFY" list="symbol-list-2" autocomplete="off" />
+            <datalist id="symbol-list-2"></datalist>
+          </label>
+          <button class="btn btn-primary" id="stock-go">Show results</button>
+        </div>
+      </div>
+      <div class="card" id="stock-coverage-card" hidden>
+        <h2 id="stock-title">—</h2>
+        <div id="stock-coverage" class="stat-block"></div>
+      </div>
+      <div class="card" id="stock-result-card" hidden>
+        <div class="card-head">
+          <h2>Every strategy's result on this stock</h2>
+          <span class="muted small">sorted by avg R — this is where a stock-specific edge shows up</span>
+        </div>
+        <div id="stock-chart"></div>
+        <div id="stock-result-table" class="table-wrap"></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

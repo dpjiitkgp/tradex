@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Best 10 Stocks — Plain-Language Guide</title>
+<style>
+  @page { size: A4; margin: 22mm 18mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.6;
+    font-size: 13px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 23px; margin-bottom: 4px; color: #111; }
+  .subtitle { color: #666; font-size: 13px; margin-bottom: 26px; }
+  h2 {
+    font-size: 17px; margin-top: 34px; margin-bottom: 10px;
+    padding-bottom: 6px; border-bottom: 2px solid #2c3e50;
+    color: #111; page-break-after: avoid;
+  }
+  h3 { font-size: 14.5px; margin-top: 20px; margin-bottom: 6px; color: #2c3e50; page-break-after: avoid; }
+  p { margin: 8px 0; }
+  .lede {
+    background: #f5f7fa; border-left: 4px solid #2c3e50;
+    padding: 12px 16px; margin: 14px 0; font-size: 12.5px;
+  }
+  .strategy-box {
+    background: #fafafa; border: 1px solid #e0e0e0; border-radius: 6px;
+    padding: 14px 18px; margin: 12px 0; page-break-inside: avoid;
+  }
+  .strategy-box .name { font-weight: 700; font-size: 14.5px; color: #1a1a1a; margin-bottom: 6px; }
+  .strategy-box .used-by { font-size: 11px; color: #777; margin-top: 8px; }
+  .stock-card {
+    border: 1px solid #dfe3e8; border-radius: 6px; padding: 12px 16px;
+    margin: 10px 0; page-break-inside: avoid;
+  }
+  .stock-card .rank {
+    display: inline-block; background: #2c3e50; color: #fff;
+    font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    margin-right: 8px;
+  }
+  .stock-card .name { font-weight: 700; font-size: 14px; }
+  .stock-card .stats { color: #555; font-size: 11.5px; margin-top: 4px; }
+  .stock-card .stats b { color: #1a7a3c; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 18px 0; font-size: 11.5px; }
+  th, td { border: 1px solid #d8d8d8; padding: 5px 8px; text-align: right; }
+  th { background: #2c3e50; color: #fff; font-weight: 600; text-align: right; }
+  td:first-child, th:first-child { text-align: left; }
+  tr:nth-child(even) { background: #f7f9fb; }
+  .pos { color: #1a7a3c; font-weight: 600; }
+  .neg { color: #b3261e; font-weight: 600; }
+  .formula {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    background: #1e2530; color: #e8eef5; padding: 10px 14px;
+    border-radius: 5px; font-size: 11.5px; margin: 8px 0;
+    overflow-x: auto; white-space: pre;
+  }
+  .callout {
+    background: #fff8e6; border: 1px solid #e8cf8a; border-radius: 6px;
+    padding: 12px 16px; margin: 14px 0; font-size: 12px;
+  }
+  .callout.warn { background: #fdecea; border-color: #f3b3ab; }
+  .step {
+    background: #f0f4fa; border-radius: 6px; padding: 10px 14px; margin: 8px 0;
+    font-size: 12px;
+  }
+  .step b { color: #2c3e50; }
+  .page-break { page-break-before: always; }
+  ul { margin: 8px 0; padding-left: 22px; }
+  li { margin: 4px 0; }
+  .footer-note {
+    margin-top: 40px; padding-top: 12px; border-top: 1px solid #ddd;
+    color: #888; font-size: 10.5px;
+  }
+</style>
+</head>
+<body>
+
+<h1>10 Best Stocks for Intraday Trading — A Plain-Language Guide</h1>
+<div class="subtitle">Based on 5.5 years of NSE minute-by-minute price data (2021-03 to 2026-09), 165 stocks, 12 different trading rules tested · generated 2026-09-25</div>
+
+<div class="lede">
+This document picks the 10 best-performing stock + strategy combinations found across an extensive research
+effort, explains — in plain terms, with no coding or trading jargon assumed — exactly what each underlying
+strategy actually does, and works through what a realistic monthly profit might look like if you traded all
+10 with ₹1,00,000, including real trading costs and a sensible allowance for missed trades.
+</div>
+
+<h2>1. What is a "strategy" here?</h2>
+<p>
+A strategy is just a fixed, mechanical rule for deciding when to buy or sell a stock during the trading day —
+no guesswork, no gut feeling, the same rule applied the same way every single time. Three different rules
+produced the 10 best results, described below in plain language.
+</p>
+
+<div class="strategy-box">
+  <div class="name">1. Opening Range Breakout</div>
+  <p>
+  Right when the market opens at 9:15 AM, prices often swing around before settling into a real direction for
+  the day. This rule watches the stock for the first 15 minutes (9:15–9:30 AM) and notes the highest and
+  lowest price it touches — call this the <b>"opening range."</b> If, sometime before 9:45 AM, the price
+  breaks <i>above</i> the top of that range while noticeably more shares than usual are trading hands, that's
+  read as the stock genuinely starting to move up for the day — so we buy. If price breaks <i>below</i> the
+  bottom of the range instead, we sell (this is called "shorting" — profiting if the price falls). Each stock
+  is only checked for this once per day.
+  </p>
+  <div class="used-by">Used for: <b>ETERNAL, BDL</b></div>
+</div>
+
+<div class="strategy-box">
+  <div class="name">2. Three-in-a-Row Momentum ("Strong Rally")</div>
+  <p>
+  This rule looks at the stock's price in 5-minute chunks throughout the day. If the price moves up by at
+  least 0.2% in three of these 5-minute chunks <b>in a row</b>, that's a real, steady push in one direction —
+  not just random back-and-forth wobble. The instant we see that third consecutive strong move, we buy right
+  at the start of the very next 5-minute chunk, betting the push continues a little further. The same idea
+  works in reverse for three falling chunks in a row, where we'd sell instead.
+  </p>
+  <div class="used-by">Used for: <b>ADANIENT, INDHOTEL, HINDUNILVR</b></div>
+</div>
+
+<div class="strategy-box">
+  <div class="name">3. Falling Below the Day's Average Price (sell-only, mid-morning)</div>
+  <p>
+  "VWAP" stands for Volume Weighted Average Price — think of it as the fair average price the stock has
+  traded at <i>so far today</i>, but weighted so that prices where a lot of shares changed hands count more
+  than prices where only a few did. It's a good read on whether, overall, today has leaned toward buying or
+  selling pressure. Alongside VWAP, we track two moving averages of the price — a fast one (the last 9
+  minutes) and a slower one (the last 21 minutes). When the fast average crosses <i>below</i> the slow one —
+  a sign the very recent trend has just turned down — <b>and</b> the price is below today's VWAP <b>and</b>
+  more shares than usual are trading, we sell, betting the stock keeps falling for a while longer. Only the
+  sell (falling-price) version of this signal is used — testing found it noticeably more reliable than the
+  buy side — and only after the first 45 minutes of the late-morning session, since very early signals proved
+  weaker.
+  </p>
+  <div class="used-by">Used for: <b>APARINDS, OIL, NLCINDIA, KPITTECH, AWL</b></div>
+</div>
+
+<h2>2. Two numbers you'll see everywhere</h2>
+<div class="strategy-box">
+  <div class="name">Win rate</div>
+  <p>Out of every 100 times this rule triggered a trade, how many closed with a profit. A win rate of 45%
+  means 45 out of 100 trades made money and 55 lost — which sounds bad, but is completely fine <i>if</i> the
+  winning trades, on average, make noticeably more than the losing trades lose (which is the case for every
+  stock below — losses are capped tightly by a stop-loss, while wins are allowed to run further).</p>
+</div>
+<div class="strategy-box">
+  <div class="name">Average profit per trade</div>
+  <p>The average price move, in percent, across every trade this rule took — winners and losers blended
+  together. This is the single number that most honestly answers "does this actually make money," and it's
+  the number the monthly profit calculation below is built from.</p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>3. The 10 best stocks</h2>
+<p>Each stock below is shown with whichever of the three strategies worked best for it specifically — a
+different strategy can genuinely suit a different stock, which is exactly what this list demonstrates.</p>
+
+<div class="stock-card">
+  <span class="rank">#1</span><span class="name">ETERNAL</span> <span style="color:#777">(the company behind Zomato)</span>
+  <div class="stats">Strategy: Opening Range Breakout · 430 trades over 5.5 years · Win rate <b>44.0%</b> · Average profit per trade <b>+0.302%</b></div>
+</div>
+<div class="stock-card">
+  <span class="rank">#2</span><span class="name">ADANIENT</span> <span style="color:#777">(Adani Enterprises)</span>
+  <div class="stats">Strategy: Three-in-a-Row Momentum · 738 trades · Win rate <b>39.6%</b> · Average profit per trade <b>+0.188%</b></div>
+</div>
+<div class="stock-card">
+  <span class="rank">#3</span><span class="name">APARINDS</span> <span style="color:#777">(Apar Industries — cables & transformers)</span>
+  <div class="stats">Strategy: Falling Below VWAP (sell-only) · 471 trades · Win rate <b>48.2%</b> · Average profit per trade <b>+0.183%</b></div>
+</div>
+<div class="stock-card">
+  <span class="rank">#4</span><span class="name">BDL</span> <span style="color:#777">(Bharat Dynamics — defence manufacturer)</span>
+  <div class="stats">Strategy: Opening Range Breakout · 566 trades · Win rate <b>41.2%</b> · Average profit per trade <b>+0.183%</b></div>
+</div>
+<div class="stock-card">
+  <span class="rank">#5</span><span class="name">INDHOTEL</span> <span style="color:#777">(Indian Hotels — the Taj group)</span>
+  <div class="stats">Strategy: Three-in-a-Row Momentum · 514 trades · Win rate <b>41.2%</b> · Average profit per trade <b>+0.161%</b></div>
+</div>
+<div class="stock-card">
+  <span class="rank">#6</span><span class="name">OIL</span> <span style="color:#777">(Oil India — state-run oil & gas explorer)</span>
+  <div class="stats">Strategy: Falling Below VWAP (sell-only) · 465 trades · Win rate <b>46.2%</b> · Average profit per trade <b>+0.161%</b></div>
+</div>
+<div class="stock-card">
+  <span class="rank">#7</span><span class="name">NLCINDIA</span> <span style="color:#777">(NLC India — state-run mining & power)</span>
+  <div class="stats">Strategy: Falling Below VWAP (sell-only) · 469 trades · Win rate <b>49.7%</b> · Average profit per trade <b>+0.154%</b></div>
+</div>
+<div class="stock-card">
+  <span class="rank">#8</span><span class="name">KPITTECH</span> <span style="color:#777">(KPIT Technologies — automotive software)</span>
+  <div class="stats">Strategy: Falling Below VWAP (sell-only) · 406 trades · Win rate <b>49.5%</b> · Average profit per trade <b>+0.152%</b></div>
+</div>
+<div class="stock-card">
+  <span class="rank">#9</span><span class="name">AWL</span> <span style="color:#777">(AWL Agri Business, formerly Adani Wilmar)</span>
+  <div class="stats">Strategy: Falling Below VWAP (sell-only) · 342 trades · Win rate <b>57.9%</b> (best win rate of the 10) · Average profit per trade <b>+0.151%</b></div>
+</div>
+<div class="stock-card">
+  <span class="rank">#10</span><span class="name">HINDUNILVR</span> <span style="color:#777">(Hindustan Unilever)</span>
+  <div class="stats">Strategy: Three-in-a-Row Momentum · 128 trades (smallest sample — treat with extra caution) · Win rate <b>49.2%</b> · Average profit per trade <b>+0.145%</b></div>
+</div>
+
+<div class="page-break"></div>
+
+<h2>4. Monthly profit calculation on ₹1,00,000 — step by step</h2>
+
+<div class="step"><b>Step 1 — how many trading signals do these 10 stocks produce, combined, per month?</b>
+<p>Adding up all 10 stocks' trade counts over the 5.5-year (67-month) test period: <b>4,529 total trades</b>,
+which works out to <b>67.6 signals per month</b> if every single one could be acted on.</p>
+</div>
+
+<div class="step"><b>Step 2 — but you can't take every signal.</b>
+<p>With ₹1,00,000, you're realistically trading one position at a time. Two different stocks can generate a
+signal within minutes of each other, and you can only act on one. As a working assumption (yours): <b>if 100
+signals occur in a month, you'll actually manage to get into about 40 of them</b> — a 40% capture rate. Applied
+to 67.6 signals/month, that's:</p>
+<div class="formula">67.6 signals/month × 40% capture rate ≈ 27 trades/month you actually place</div>
+</div>
+
+<div class="step"><b>Step 3 — average profit per trade, blended across all 10 stocks.</b>
+<p>Weighting each stock's average profit by how often it actually trades (a stock with 738 trades counts more
+than one with 128), the blended average works out to <b>+0.181%</b> price move per trade, before costs.</p>
+</div>
+
+<div class="step"><b>Step 4 — subtract real trading costs.</b>
+<p>Every trade has two "legs" — buying in, selling out — and each leg incurs brokerage, a securities
+transaction tax, exchange fees, GST, and stamp duty. On a ₹4,00,000 trade size (see Step 5), this totals
+approximately <b>₹188 per round trip, or 0.047% of the trade's value</b>:</p>
+<table>
+<tr><th>Charge</th><th>Amount</th></tr>
+<tr><td>Brokerage (both legs)</td><td>₹40</td></tr>
+<tr><td>Securities Transaction Tax</td><td>₹100</td></tr>
+<tr><td>Exchange fees</td><td>₹24</td></tr>
+<tr><td>SEBI charges</td><td>₹1</td></tr>
+<tr><td>Stamp duty</td><td>₹12</td></tr>
+<tr><td>GST (18% on brokerage + fees)</td><td>₹12</td></tr>
+<tr><td><b>Total per trade</b></td><td><b>≈ ₹188 (0.047% of trade value)</b></td></tr>
+</table>
+<div class="formula">0.181% (gross profit) − 0.047% (costs) = 0.134% net profit per trade</div>
+</div>
+
+<div class="step"><b>Step 5 — apply intraday margin.</b>
+<p>Intraday trading (MIS) lets a broker lend roughly 4× your capital for the day. So ₹1,00,000 of your own
+money controls about ₹4,00,000 worth of stock. A 0.134% price move on ₹4,00,000 is worth 4× more relative to
+your own ₹1,00,000:</p>
+<div class="formula">0.134% × 4 (leverage) = 0.536% return on your ₹1,00,000, per trade</div>
+<div class="formula">₹1,00,000 × 0.536% = ₹536 net profit per trade (average)</div>
+</div>
+
+<div class="step"><b>Step 6 — put it together.</b>
+<div class="formula">27 trades/month × ₹536 per trade ≈ ₹14,500 per month</div>
+</div>
+
+<table>
+<tr><th>Scenario</th><th>Monthly profit (₹)</th><th>As % of ₹1,00,000</th></tr>
+<tr><td>Before trading costs (gross)</td><td>₹19,585</td><td class="pos">19.6%</td></tr>
+<tr><td><b>After trading costs (net) — the realistic figure</b></td><td><b>₹14,502</b></td><td class="pos"><b>14.5%</b></td></tr>
+</table>
+
+<div class="callout warn">
+<b>Read this before trusting that number.</b> ₹14,500/month (14.5%) is a large number, and there are specific,
+important reasons it's likely optimistic:
+<ul>
+<li><b>These 10 stocks were hand-picked as the best 10 out of roughly 2,000 stock-and-strategy combinations
+tested.</b> When you search that widely and keep only the top performers, some of what looks best is genuine
+skill and some is simply luck — that's true of any such search, not a flaw specific to this one. A large
+research effort earlier in this project found that a strategy's very best-looking result on one slice of data
+regularly performed much worse once tested on more data (one stock's headline result fell by over 70% once
+retested on a larger sample).</li>
+<li><b>The 40% "capture rate" in Step 2 is a reasonable assumption, not a measured fact</b> — real results
+will depend on how conflicts between simultaneous signals actually get resolved day to day.</li>
+<li><b>Real order fills are usually slightly worse than backtested ones.</b> This research already found one
+real example where a trade's actual loss was larger than intended because price moved fast within a single
+1-minute window.</li>
+<li>None of this has been tested with real money yet. Treat this as a well-reasoned estimate to plan around,
+not a guarantee.</li>
+</ul>
+A more conservative way to read this section: the <i>mechanism</i> (pick strong stock+strategy pairs, size
+positions with leverage, account for costs) is sound and the math is done correctly — but the actual monthly
+number, in practice, is more likely to land noticeably below 14.5% than above it.
+</div>
+
+<div class="footer-note">
+Generated from the papertrader research pipeline · underlying data: 165 NSE stocks, 2021-03 to 2026-09,
+0.75% stop-loss configuration · full per-trade detail queryable via run ids 59-70 in
+<code>data/papertrader.db</code> · source report: <code>research/stop-0.75pct-5yr/all-strategies.md</code>
+</div>
+
+</body>
+</html>

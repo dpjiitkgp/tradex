@@ -1,0 +1,86 @@
+# ---------------------------------------------------------------------------
+# Secrets and personal information
+#
+# Deliberately broad and duplicated with intraday/.gitignore. A secret that
+# reaches a public remote cannot be un-published by a later commit, so these
+# rules fail closed: ignore the whole class, then re-admit the specific
+# template files with `!`.
+# ---------------------------------------------------------------------------
+
+# Kite API key/secret, Zerodha client id, password, TOTP seed
+/intraday/secrets/*
+!/intraday/secrets/.gitkeep
+!/intraday/secrets/credentials.example.toml
+
+# Telegram bot token / ntfy topic — both grant access to live trading alerts
+/intraday/config/alerts.toml
+
+# This machine's egress IP, mirrored from the Kite console
+/intraday/config/ip_whitelist.toml
+
+# Any backup of a config file is a copy of whatever secret it held. The dated
+# suffixes (foo.toml.bak-20260930012054) are why this needs the glob form.
+*.bak
+*.bak-*
+*.orig
+*.rej
+
+# Generic credential shapes, in case a new one is added without a rule
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*credentials.toml
+!*credentials.example.toml
+*access_token*
+*enctoken*
+
+# ---------------------------------------------------------------------------
+# Market data — large and fully regenerable from the broker/exchange
+# ---------------------------------------------------------------------------
+
+# Python EOD options pipeline (NSE bhavcopy + index spot)
+/data/raw/
+/data/interim/
+/data/processed/
+/data/index/
+!/data/.gitkeep
+
+# Rust intraday system: minute-candle cache, trade database, run logs (~33 GB)
+/intraday/data/
+!/intraday/data/.gitkeep
+
+# Daily bars rebuilt from the minute cache by research/swing/build_daily.py
+/intraday/research/swing/data/
+
+# ---------------------------------------------------------------------------
+# Build artifacts and caches
+# ---------------------------------------------------------------------------
+/intraday/target/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# ---------------------------------------------------------------------------
+# Local tooling and editor state
+# ---------------------------------------------------------------------------
+
+# Per-machine tool permissions; .claude/skills/ IS tracked on purpose
+.claude/settings.local.json
+.claude/*.lock
+.vscode/
+.idea/
+
+# ---------------------------------------------------------------------------
+# Logs and OS cruft
+# ---------------------------------------------------------------------------
+*.log
+.DS_Store
+Thumbs.db

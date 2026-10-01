@@ -1,0 +1,88 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/core-types",
+    "crates/market-calendar",
+    "crates/kite-auth",
+    "crates/kite-client",
+    "crates/indicators",
+    "crates/universe",
+    "crates/strategy-core",
+    "crates/strategies",
+    "crates/risk",
+    "crates/storage",
+    "crates/paper-engine",
+    "crates/backtest",
+    "crates/scheduler",
+    "crates/live-trading",
+    "cli",
+    "web",
+]
+
+[workspace.package]
+edition = "2021"
+version = "0.1.0"
+publish = false
+
+[workspace.dependencies]
+# intra-workspace
+core-types = { path = "crates/core-types" }
+market-calendar = { path = "crates/market-calendar" }
+kite-auth = { path = "crates/kite-auth" }
+kite-client = { path = "crates/kite-client" }
+indicators = { path = "crates/indicators" }
+universe = { path = "crates/universe" }
+strategy-core = { path = "crates/strategy-core" }
+strategies = { path = "crates/strategies" }
+risk = { path = "crates/risk" }
+storage = { path = "crates/storage" }
+paper-engine = { path = "crates/paper-engine" }
+backtest = { path = "crates/backtest" }
+scheduler = { path = "crates/scheduler" }
+live-trading = { path = "crates/live-trading" }
+
+# async / runtime
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "signal", "sync", "net"] }
+async-trait = "0.1"
+futures = "0.3"
+
+# http
+reqwest = { version = "0.12", features = ["json", "cookies", "rustls-tls"], default-features = false }
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+tokio-stream = "0.1"
+axum = "0.7"
+tower-http = { version = "0.5", features = ["fs"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+
+# serialization / config
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+
+# time
+chrono = { version = "0.4", features = ["serde"] }
+chrono-tz = { version = "0.10", features = ["serde"] }
+
+# storage
+rusqlite = { version = "0.32", features = ["bundled"] }
+rusqlite_migration = "1"
+
+# cli / logging / errors
+clap = { version = "4", features = ["derive"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-appender = "0.2"
+anyhow = "1"
+thiserror = "1"
+
+# secrets / auth
+secrecy = { version = "0.8", features = ["serde"] }
+totp-rs = "5"
+keyring = "3"
+sha2 = "0.10"
+hex = "0.4"
+url = "2"
+
+# misc
+rand = "0.8"
+csv = "1"

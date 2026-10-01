@@ -1,0 +1,22 @@
+[package]
+name = "backtest"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+async-trait = { workspace = true }
+futures = { workspace = true }
+core-types = { workspace = true }
+paper-engine = { workspace = true }
+storage = { workspace = true }
+strategy-core = { workspace = true }
+risk = { workspace = true }
+tracing = { workspace = true }
+anyhow = { workspace = true }
+chrono = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
+strategies = { workspace = true }
+chrono-tz = { workspace = true }

@@ -1,0 +1,204 @@
+# Live config for the real-money VWAP-slope short book.
+#
+# 2026-09-29: rebuilt from the walk-forward study. Two changes from the
+# previous version, both evidenced in research/stock-selection/:
+#
+#  1. SELECTION is now mechanical and periodic: top 25 by Avg R over the
+#     trailing 2 years, win% >= 48, re-ranked QUARTERLY. The previous book
+#     was 15 names picked once on ~8 years and never refreshed - the
+#     worst-performing setup in every sweep.
+#
+#     The Rs2M/min traded-value floor the ranking comments mention was
+#     NOT applied: it costs ~0.02 R up front and its benefit is capacity,
+#     not edge. The per-stock Rs/min figures below are recorded for
+#     reference only; nothing enforces them.
+#
+#  2. PER-STOCK TUNING IS GONE. Every stock now runs the same
+#     (lookback 20, MRM 3.0, trail 0.75%). Walk-forward over 482
+#     stock-quarters found per-stock tuning worth exactly 0.0000 R
+#     (t = 0.00): it changed which config was used 482 times and made no
+#     measurable difference. Each stock has ~75 trades per training
+#     window against sigma 1.4 R, far too few to choose between 12
+#     configs, so the old +19% gain was selection noise.
+#
+# The exit config itself is unchanged and was re-confirmed: MRM 1.5 is
+# significantly worse (t = 2.03), MRM 6.0 and a 0.25% trail are both
+# within noise or slightly worse under walk-forward.
+#
+# NEXT REBALANCE: 2027Q1. Re-run
+#   python3 research/stock-analysis/detail_report.py --lookback 8 \
+#     --unit quarter --topn 25 --min-turnover 2000000 \
+#     --data research/long-baseline/analysis/short_quarterly_110.tsv
+# and take the basket it selects on data through 2026Q4.
+#
+# EXPECTATION — corrected 2026-10-01, read this before trusting any older
+# number in this repo.
+#
+# Every figure produced before 2026-09-30 assumed a 15:15 square-off, which
+# Zerodha does not permit (MIS orders are refused from 15:12). Re-measured at
+# the achievable 15:10, this book's backtest is:
+#
+#   24m window, 2020Q4..2026Q3   +0.0133 net R/trade   (~Rs12,400/yr on Rs1L)
+#   the same, 2021Q1 onward      +0.0002 net R/trade   (~zero)
+#
+# The five minutes were worth -0.0426 R/trade, about 76% of the measured
+# edge, and what remains is one post-COVID quarter. See
+# research/stock-selection/square-off-1515-vs-1510.md and
+# research/stock-selection/window-length-matched.md.
+#
+# Those numbers are also GROSS of market impact (~0.06 R round trip at
+# median size) and assume a 97.9% fill rate the live engine has not achieved.
+# Treat this book as unproven rather than as a Rs37,000/yr expectation.
+
+[shared]
+risk_pct = 0.0075
+
+[[stock]]
+symbol = "PRESTIGE"   # rank 1, train AvgR 0.479, win 56.2%, Rs2.8M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "LENSKART"   # rank 2, train AvgR 0.435, win 61.5%, Rs13.8M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "HAL"   # rank 3, train AvgR 0.405, win 54.7%, Rs10.8M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "ICICIPRULI"   # rank 4, train AvgR 0.384, win 51.4%, Rs2.2M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "IDEA"   # rank 5, train AvgR 0.384, win 52.1%, Rs17.8M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "GMRAIRPORT"   # rank 6, train AvgR 0.379, win 48.4%, Rs4.8M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "VOLTAS"   # rank 7, train AvgR 0.343, win 50.7%, Rs3.1M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "WAAREEENER"   # rank 8, train AvgR 0.329, win 50.0%, Rs5.5M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "DABUR"   # rank 9, train AvgR 0.327, win 56.1%, Rs2.3M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "ASIANPAINT"   # rank 10, train AvgR 0.316, win 56.0%, Rs6.9M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "ITC"   # rank 11, train AvgR 0.307, win 60.0%, Rs10.6M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "TMPV"   # rank 12, train AvgR 0.305, win 55.3%, Rs9.4M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "DIXON"   # rank 13, train AvgR 0.298, win 51.1%, Rs17.4M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "TVSMOTOR"   # rank 14, train AvgR 0.293, win 58.1%, Rs11.1M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "TIINDIA"   # rank 15, train AvgR 0.287, win 51.6%, Rs2.5M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "ATGL"   # rank 16, train AvgR 0.283, win 56.5%, Rs5.3M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "PNB"   # rank 17, train AvgR 0.282, win 54.1%, Rs4.9M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "APARINDS"   # rank 18, train AvgR 0.279, win 51.1%, Rs6.8M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "NAUKRI"   # rank 19, train AvgR 0.258, win 53.6%, Rs6.4M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "LODHA"   # rank 20, train AvgR 0.252, win 50.6%, Rs7.4M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "YESBANK"   # rank 21, train AvgR 0.250, win 56.5%, Rs5.4M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "NMDC"   # rank 22, train AvgR 0.249, win 55.4%, Rs4.9M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "LLOYDSME"   # rank 23, train AvgR 0.244, win 51.0%, Rs2.4M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "CANBK"   # rank 24, train AvgR 0.242, win 53.1%, Rs7.7M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075
+
+[[stock]]
+symbol = "LICI"   # rank 25, train AvgR 0.232, win 59.7%, Rs9.1M/min
+lookback = 20
+mrm = 3.0
+trail = 0.0075

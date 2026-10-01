@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Intraday Strategy Research Report — 2026-09-25</title>
+<style>
+  @page { size: A4; margin: 22mm 18mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.55;
+    font-size: 13px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 24px;
+    margin-bottom: 4px;
+    color: #111;
+  }
+  .subtitle {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+  h2 {
+    font-size: 17px;
+    margin-top: 36px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #2c3e50;
+    color: #111;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 14px;
+    margin-top: 22px;
+    margin-bottom: 6px;
+    color: #2c3e50;
+    page-break-after: avoid;
+  }
+  p { margin: 8px 0; }
+  .lede {
+    background: #f5f7fa;
+    border-left: 4px solid #2c3e50;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 12.5px;
+  }
+  .term-box {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 12px 0;
+  }
+  .term-box .term {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1a1a1a;
+  }
+  .formula {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    background: #1e2530;
+    color: #e8eef5;
+    padding: 10px 14px;
+    border-radius: 5px;
+    font-size: 12px;
+    margin: 8px 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0 18px 0;
+    font-size: 11.5px;
+  }
+  th, td {
+    border: 1px solid #d8d8d8;
+    padding: 5px 8px;
+    text-align: right;
+  }
+  th {
+    background: #2c3e50;
+    color: #fff;
+    font-weight: 600;
+    text-align: right;
+  }
+  td:first-child, th:first-child { text-align: left; }
+  tr:nth-child(even) { background: #f7f9fb; }
+  .pos { color: #1a7a3c; font-weight: 600; }
+  .neg { color: #b3261e; font-weight: 600; }
+  .muted { color: #777; font-size: 11px; }
+  .strategy-table-wrap { page-break-inside: avoid; }
+  .callout {
+    background: #fff8e6;
+    border: 1px solid #e8cf8a;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 12px;
+  }
+  .callout.warn {
+    background: #fdecea;
+    border-color: #f3b3ab;
+  }
+  .page-break { page-break-before: always; }
+  ul { margin: 8px 0; padding-left: 22px; }
+  li { margin: 4px 0; }
+  .footer-note {
+    margin-top: 40px;
+    padding-top: 12px;
+    border-top: 1px solid #ddd;
+    color: #888;
+    font-size: 10.5px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Intraday Equity Strategy Research — Summary Report</h1>
+<div class="subtitle">papertrader / tradex-intraday · backtested against 5 years of NSE minute-bar data (2021-03 to 2026-09) · generated 2026-09-25</div>
+
+<div class="lede">
+This report summarizes an overnight-through-morning research effort: 12 intraday equity strategy variants
+were backtested against roughly 5.5 years of 1-minute candle data across 165 NSE stocks, using a consistent
+exit rule throughout (0.5% hard stop, profit-lock arms at 3x risk, then a give-back trail) so results are
+directly comparable. It covers what the key metrics mean, the top-performing stocks for each strategy, and
+a worked example of what a monthly return might look like on ₹1,00,000 of capital — including the effect of
+real trading costs, which turn out to matter a great deal.
+</div>
+
+<h2>1. Key terms, explained</h2>
+
+<div class="term-box">
+  <div class="term">Avg R (Average R-multiple)</div>
+  <p>A trade's outcome measured as a multiple of how much was risked on it, not as a raw price move. If the
+  hard stop is 0.5% of the entry price, that 0.5% distance is "1R" — the unit of risk. A trade that made
+  twice what was risked closed at <b>+2R</b>; a trade that hit its stop closed at <b>-1R</b>.</p>
+  <div class="formula">R = (exit_price − entry_price) / (entry_price × risk_pct)   [sign-adjusted for long/short]</div>
+  <p>Averaging R across many trades gives a single number that's comparable across different stocks and
+  prices — a ₹5 move on a ₹1,000 stock and a ₹50 move on a ₹10,000 stock can be the same "1R" if the risk
+  sizing was equivalent. <b>Avg R is the number that most directly reflects whether a strategy has a real
+  edge</b> — a small positive Avg R across thousands of trades is what "the strategy makes money" looks like
+  numerically.</p>
+</div>
+
+<div class="term-box">
+  <div class="term">Win % (Win rate)</div>
+  <p>The percentage of trades that closed with a profit. On its own this number can mislead — a strategy can
+  have a low win rate and still be profitable if its winners are large relative to its losers (this is
+  exactly the shape found in this research: most strategies here cluster around 35-45% win rate, with losses
+  capped near -1R by the hard stop and winners occasionally running to +2R, +3R or more once a trade clears
+  the profit-lock threshold).</p>
+  <p>Win % and Avg R answer different questions: Win % asks "how often am I right?", Avg R asks "how much do
+  I make when I average across every outcome, right and wrong?" A strategy's real value comes from Avg R;
+  Win % mainly affects how the experience of trading it <i>feels</i> day to day (a higher win rate makes for
+  fewer, easier-to-tolerate losing streaks).</p>
+</div>
+
+<div class="term-box">
+  <div class="term">Avg PnL%</div>
+  <p>The plain underlying price move, averaged across all trades — e.g. "+0.055%" means the stock moved an
+  average of 0.055% in the trade's favor. This is <b>not</b> capital return; it doesn't account for margin.
+  At 4x MIS leverage, actual capital return is roughly 4× this figure (see the worked example below).</p>
+</div>
+
+<div class="term-box">
+  <div class="term">Trades</div>
+  <p>Sample size. Results based on fewer than ~100-200 trades should be treated cautiously — this research
+  found multiple cases where a strategy looked excellent on a small sample and reverted much closer to
+  average once tested on a larger one (see the caveats section).</p>
+</div>
+
+<h2>2. Monthly profit calculation, ₹1,00,000 invested</h2>
+
+<p>Worked using <b>ma_alignment (confirmed)</b> — the strategy with the most consistent edge across this
+entire research effort — at 4x MIS margin, 0.5% stop. Two versions: the broad pooled average across all 165
+stocks, and the single best-performing stock (IRCTC) specifically.</p>
+
+<div class="formula">capital_return_per_trade = avg_underlying_pnl% × leverage(4x)
+trades_per_month         = total_trades ÷ months_of_backtest (67 months)
+monthly_return%          = trades_per_month × capital_return_per_trade</div>
+
+<h3>2a. Pooled average (all 165 stocks) — the realistic broad-based case</h3>
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>Avg underlying PnL per trade (gross)</td><td>0.020%</td></tr>
+<tr><td>Round-trip trading cost (brokerage + STT + exchange + GST + stamp duty, ₹4L notional)</td><td>0.047%</td></tr>
+<tr><td>Avg underlying PnL per trade (net of costs)</td><td class="neg">-0.027%</td></tr>
+<tr><td>Net capital return per trade (× 4 leverage)</td><td class="neg">-0.108%</td></tr>
+</table>
+<div class="callout warn">
+<b>The pooled, broad-based version of this strategy loses money after realistic trading costs.</b> The raw
+backtest edge (+0.020% per trade) is smaller than the cost of simply placing the trade (0.047% round trip).
+This is the single most important finding in this whole report: a backtest showing a "positive" number is
+not sufficient — it has to be positive by more than the cost of trading it, and most of what was tested here
+is not.
+</div>
+
+<h3>2b. Best single stock — IRCTC specifically</h3>
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>Trades (5-year backtest)</td><td>2,764</td></tr>
+<tr><td>Avg underlying PnL per trade (gross)</td><td>0.055%</td></tr>
+<tr><td>Win rate</td><td>43.2%</td></tr>
+<tr><td>Round-trip trading cost</td><td>0.047%</td></tr>
+<tr><td>Avg underlying PnL per trade (net of costs)</td><td class="pos">0.008%</td></tr>
+<tr><td>Net capital return per trade (× 4 leverage)</td><td class="pos">0.032%</td></tr>
+<tr><td>Net profit per trade, on ₹1,00,000</td><td class="pos">₹32</td></tr>
+<tr><td>Trades per month (2,764 ÷ 67 months)</td><td>≈ 41.3</td></tr>
+<tr><td><b>Net monthly profit, ₹1,00,000 invested</b></td><td class="pos"><b>≈ ₹1,320 (≈ 1.3%/month)</b></td></tr>
+</table>
+
+<div class="callout">
+Worth being direct about the trajectory of this number across the research: an earlier, smaller sample
+(196 trades over 6 months) suggested IRCTC's edge was worth roughly <b>15.8%/month gross</b>, before any cost
+adjustment. As the dataset grew to the full 5 years (2,764 trades), that same edge shrank to <b>0.055%
+gross</b> per trade — and after subtracting real trading costs, the honest net estimate is closer to
+<b>1.3%/month</b>. This is exactly the kind of correction more data is supposed to produce, and it lands
+close to the original 2-3%/month target rather than the inflated early estimate.
+</div>
+
+<div class="page-break"></div>
+
+<h2>3. Top 10 stocks per strategy (5-year backtest, min. 100 trades)</h2>
+<p class="muted">All figures: 0.5% stop, arms at 1.5% (3x risk), give-back trail 0.5% behind peak — same exit
+rule throughout, so differences reflect entry logic only.</p>
+
+<h3>ma_alignment (confirmed) — overall best performer</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>LICI</td><td>1,945</td><td class="pos">+0.161</td><td>45.2%</td></tr>
+<tr><td>2</td><td>BRITANNIA</td><td>2,392</td><td class="pos">+0.026</td><td>44.6%</td></tr>
+<tr><td>3</td><td>APOLLOHOSP</td><td>2,535</td><td class="pos">+0.086</td><td>44.2%</td></tr>
+<tr><td>4</td><td>ITC</td><td>2,267</td><td class="pos">+0.033</td><td>44.2%</td></tr>
+<tr><td>5</td><td>AXISBANK</td><td>2,489</td><td class="pos">+0.083</td><td>43.9%</td></tr>
+<tr><td>6</td><td>HINDUNILVR</td><td>2,270</td><td class="pos">+0.037</td><td>43.9%</td></tr>
+<tr><td>7</td><td>HONAUT</td><td>2,489</td><td class="pos">+0.108</td><td>43.9%</td></tr>
+<tr><td>8</td><td>BAJAJ-AUTO</td><td>2,440</td><td class="pos">+0.045</td><td>43.5%</td></tr>
+<tr><td>9</td><td>ASIANPAINT</td><td>2,360</td><td class="pos">+0.033</td><td>43.4%</td></tr>
+<tr><td>10</td><td>DMART</td><td>2,569</td><td class="pos">+0.110</td><td>43.4%</td></tr>
+</table></div>
+
+<h3>ma_alignment (4-tier, unconfirmed)</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>HINDUNILVR</td><td>2,290</td><td class="pos">+0.042</td><td>44.7%</td></tr>
+<tr><td>2</td><td>LICI</td><td>1,949</td><td class="pos">+0.186</td><td>44.6%</td></tr>
+<tr><td>3</td><td>ITC</td><td>2,301</td><td class="pos">+0.047</td><td>44.5%</td></tr>
+<tr><td>4</td><td>DMART</td><td>2,626</td><td class="pos">+0.135</td><td>43.9%</td></tr>
+<tr><td>5</td><td>BRITANNIA</td><td>2,479</td><td class="pos">+0.011</td><td>43.8%</td></tr>
+<tr><td>6</td><td>APOLLOHOSP</td><td>2,562</td><td class="pos">+0.087</td><td>43.7%</td></tr>
+<tr><td>7</td><td>AXISBANK</td><td>2,560</td><td class="pos">+0.060</td><td>43.3%</td></tr>
+<tr><td>8</td><td>BAJAJ-AUTO</td><td>2,487</td><td class="pos">+0.060</td><td>43.3%</td></tr>
+<tr><td>9</td><td>ASIANPAINT</td><td>2,430</td><td class="pos">+0.012</td><td>43.2%</td></tr>
+<tr><td>10</td><td>LT</td><td>2,450</td><td class="pos">+0.059</td><td>43.2%</td></tr>
+</table></div>
+
+<h3>ma_alignment (3-tier, 45/30/15 — no 60m leg)</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>DMART</td><td>2,855</td><td class="pos">+0.150</td><td>44.2%</td></tr>
+<tr><td>2</td><td>ITC</td><td>2,449</td><td class="pos">+0.063</td><td>43.8%</td></tr>
+<tr><td>3</td><td>HINDUNILVR</td><td>2,461</td><td class="pos">+0.036</td><td>43.4%</td></tr>
+<tr><td>4</td><td>LICI</td><td>2,131</td><td class="pos">+0.142</td><td>43.4%</td></tr>
+<tr><td>5</td><td>MARUTI</td><td>2,651</td><td class="pos">+0.048</td><td>43.4%</td></tr>
+<tr><td>6</td><td>BRITANNIA</td><td>2,640</td><td class="pos">+0.020</td><td>43.3%</td></tr>
+<tr><td>7</td><td>HDFCBANK</td><td>2,377</td><td class="pos">+0.043</td><td>43.2%</td></tr>
+<tr><td>8</td><td>LT</td><td>2,663</td><td class="pos">+0.043</td><td>42.7%</td></tr>
+<tr><td>9</td><td>DRREDDY</td><td>2,685</td><td class="neg">-0.002</td><td>42.3%</td></tr>
+<tr><td>10</td><td>DABUR</td><td>2,651</td><td class="pos">+0.019</td><td>42.2%</td></tr>
+</table></div>
+
+<h3>trend_confluence (vwap_trend + ma_alignment combined)</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>IRCTC</td><td>382</td><td class="pos">+0.155</td><td>49.2%</td></tr>
+<tr><td>2</td><td>AWL</td><td>358</td><td class="pos">+0.212</td><td>48.9%</td></tr>
+<tr><td>3</td><td>BERGEPAINT</td><td>442</td><td class="pos">+0.096</td><td>48.2%</td></tr>
+<tr><td>4</td><td>LICI</td><td>347</td><td class="pos">+0.176</td><td>48.1%</td></tr>
+<tr><td>5</td><td>CIPLA</td><td>363</td><td class="pos">+0.060</td><td>47.7%</td></tr>
+<tr><td>6</td><td>AXISBANK</td><td>333</td><td class="pos">+0.034</td><td>47.1%</td></tr>
+<tr><td>7</td><td>BAJAJ-AUTO</td><td>361</td><td class="pos">+0.099</td><td>47.1%</td></tr>
+<tr><td>8</td><td>ADANIENT</td><td>330</td><td class="pos">+0.281</td><td>47.0%</td></tr>
+<tr><td>9</td><td>DRREDDY</td><td>367</td><td class="neg">-0.014</td><td>46.6%</td></tr>
+<tr><td>10</td><td>MARICO</td><td>393</td><td class="neg">-0.039</td><td>46.6%</td></tr>
+</table></div>
+
+<h3>vwap_trend (short-only, ≥45min into window)</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>LICI</td><td>313</td><td class="pos">+0.254</td><td>55.3%</td></tr>
+<tr><td>2</td><td>AWL</td><td>347</td><td class="pos">+0.247</td><td>50.7%</td></tr>
+<tr><td>3</td><td>ITC</td><td>350</td><td class="pos">+0.199</td><td>50.6%</td></tr>
+<tr><td>4</td><td>3MINDIA</td><td>535</td><td class="pos">+0.148</td><td>47.3%</td></tr>
+<tr><td>5</td><td>HDFCLIFE</td><td>343</td><td class="pos">+0.187</td><td>47.2%</td></tr>
+<tr><td>6</td><td>EXIDEIND</td><td>396</td><td class="pos">+0.210</td><td>47.0%</td></tr>
+<tr><td>7</td><td>COALINDIA</td><td>372</td><td class="pos">+0.210</td><td>46.5%</td></tr>
+<tr><td>8</td><td>HONAUT</td><td>480</td><td class="pos">+0.077</td><td>46.3%</td></tr>
+<tr><td>9</td><td>BAJAJ-AUTO</td><td>390</td><td class="pos">+0.136</td><td>46.2%</td></tr>
+<tr><td>10</td><td>DIVISLAB</td><td>375</td><td class="pos">+0.058</td><td>45.3%</td></tr>
+</table></div>
+
+<h3>vwap_trend (unfiltered)</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>ITC</td><td>857</td><td class="pos">+0.053</td><td>44.8%</td></tr>
+<tr><td>2</td><td>INFY</td><td>827</td><td class="pos">+0.023</td><td>42.4%</td></tr>
+<tr><td>3</td><td>BAJAJ-AUTO</td><td>933</td><td class="pos">+0.058</td><td>42.2%</td></tr>
+<tr><td>4</td><td>NESTLEIND</td><td>967</td><td class="pos">+0.010</td><td>42.2%</td></tr>
+<tr><td>5</td><td>ASIANPAINT</td><td>908</td><td class="neg">-0.003</td><td>42.0%</td></tr>
+<tr><td>6</td><td>HDFCBANK</td><td>861</td><td class="pos">+0.031</td><td>42.0%</td></tr>
+<tr><td>7</td><td>APOLLOHOSP</td><td>956</td><td class="pos">+0.050</td><td>41.3%</td></tr>
+<tr><td>8</td><td>DRREDDY</td><td>932</td><td class="neg">-0.046</td><td>41.3%</td></tr>
+<tr><td>9</td><td>HCLTECH</td><td>946</td><td class="pos">+0.022</td><td>41.2%</td></tr>
+<tr><td>10</td><td>HEROMOTOCO</td><td>962</td><td class="pos">+0.109</td><td>41.2%</td></tr>
+</table></div>
+
+<h3>trend_pullback</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>LT</td><td>2,407</td><td class="pos">+0.033</td><td>45.7%</td></tr>
+<tr><td>2</td><td>INFY</td><td>2,259</td><td class="pos">+0.004</td><td>45.2%</td></tr>
+<tr><td>3</td><td>MARUTI</td><td>2,369</td><td class="pos">+0.040</td><td>44.7%</td></tr>
+<tr><td>4</td><td>M&amp;M</td><td>2,548</td><td class="pos">+0.050</td><td>44.6%</td></tr>
+<tr><td>5</td><td>HCLTECH</td><td>2,445</td><td class="neg">-0.007</td><td>44.2%</td></tr>
+<tr><td>6</td><td>BRITANNIA</td><td>2,466</td><td class="pos">+0.005</td><td>44.0%</td></tr>
+<tr><td>7</td><td>ASIANPAINT</td><td>2,361</td><td>0.000</td><td>43.9%</td></tr>
+<tr><td>8</td><td>HDFCLIFE</td><td>2,522</td><td class="pos">+0.039</td><td>43.7%</td></tr>
+<tr><td>9</td><td>BHARTIARTL</td><td>2,352</td><td class="neg">-0.001</td><td>43.6%</td></tr>
+<tr><td>10</td><td>DABUR</td><td>2,443</td><td class="pos">+0.013</td><td>43.6%</td></tr>
+</table></div>
+
+<h3>momentum_breakout</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>AXISBANK</td><td>1,701</td><td class="pos">+0.045</td><td>45.4%</td></tr>
+<tr><td>2</td><td>ASIANPAINT</td><td>1,758</td><td class="neg">-0.021</td><td>45.3%</td></tr>
+<tr><td>3</td><td>LT</td><td>1,664</td><td class="pos">+0.051</td><td>45.3%</td></tr>
+<tr><td>4</td><td>MARUTI</td><td>1,788</td><td class="pos">+0.038</td><td>45.2%</td></tr>
+<tr><td>5</td><td>BRITANNIA</td><td>1,908</td><td class="pos">+0.006</td><td>44.7%</td></tr>
+<tr><td>6</td><td>HCLTECH</td><td>1,735</td><td class="neg">-0.011</td><td>44.6%</td></tr>
+<tr><td>7</td><td>INFY</td><td>1,585</td><td>0.000</td><td>44.5%</td></tr>
+<tr><td>8</td><td>DMART</td><td>2,114</td><td class="pos">+0.090</td><td>44.2%</td></tr>
+<tr><td>9</td><td>EICHERMOT</td><td>1,978</td><td class="neg">-0.004</td><td>44.2%</td></tr>
+<tr><td>10</td><td>DRREDDY</td><td>1,870</td><td class="neg">-0.015</td><td>43.9%</td></tr>
+</table></div>
+
+<h3>strong_rally (0.1% threshold)</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>HINDUNILVR</td><td>748</td><td class="pos">+0.118</td><td>43.9%</td></tr>
+<tr><td>2</td><td>HDFCBANK</td><td>637</td><td class="pos">+0.095</td><td>42.7%</td></tr>
+<tr><td>3</td><td>LICI</td><td>822</td><td class="pos">+0.102</td><td>41.6%</td></tr>
+<tr><td>4</td><td>ICICIBANK</td><td>817</td><td class="pos">+0.027</td><td>40.4%</td></tr>
+<tr><td>5</td><td>LT</td><td>982</td><td class="pos">+0.029</td><td>40.1%</td></tr>
+<tr><td>6</td><td>M&amp;M</td><td>1,298</td><td class="pos">+0.065</td><td>40.1%</td></tr>
+<tr><td>7</td><td>INFY</td><td>866</td><td class="pos">+0.014</td><td>40.0%</td></tr>
+<tr><td>8</td><td>MARUTI</td><td>899</td><td class="pos">+0.023</td><td>39.8%</td></tr>
+<tr><td>9</td><td>AUROPHARMA</td><td>1,641</td><td class="pos">+0.107</td><td>39.5%</td></tr>
+<tr><td>10</td><td>BPCL</td><td>1,423</td><td class="pos">+0.095</td><td>39.5%</td></tr>
+</table></div>
+
+<h3>vwap_reversion</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>HDFCBANK</td><td>1,339</td><td class="neg">-0.017</td><td>42.3%</td></tr>
+<tr><td>2</td><td>MARUTI</td><td>1,383</td><td class="pos">+0.038</td><td>42.1%</td></tr>
+<tr><td>3</td><td>ASIANPAINT</td><td>1,381</td><td>0.000</td><td>41.5%</td></tr>
+<tr><td>4</td><td>LT</td><td>1,394</td><td class="pos">+0.046</td><td>41.2%</td></tr>
+<tr><td>5</td><td>HINDUNILVR</td><td>1,368</td><td class="neg">-0.017</td><td>40.9%</td></tr>
+<tr><td>6</td><td>ICICIBANK</td><td>1,358</td><td class="neg">-0.010</td><td>40.9%</td></tr>
+<tr><td>7</td><td>BRITANNIA</td><td>1,401</td><td class="pos">+0.022</td><td>40.8%</td></tr>
+<tr><td>8</td><td>DIVISLAB</td><td>1,432</td><td class="pos">+0.098</td><td>40.7%</td></tr>
+<tr><td>9</td><td>CIPLA</td><td>1,392</td><td class="neg">-0.055</td><td>40.2%</td></tr>
+<tr><td>10</td><td>DRREDDY</td><td>1,392</td><td class="neg">-0.039</td><td>40.2%</td></tr>
+</table></div>
+
+<h3>strong_rally (0.2% threshold)</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>HINDUNILVR</td><td>131</td><td class="pos">+0.329</td><td>42.7%</td></tr>
+<tr><td>2</td><td>ASIANPAINT</td><td>182</td><td class="pos">+0.147</td><td>41.2%</td></tr>
+<tr><td>3</td><td>ABBOTINDIA</td><td>235</td><td class="pos">+0.044</td><td>40.0%</td></tr>
+<tr><td>4</td><td>HINDALCO</td><td>414</td><td class="pos">+0.108</td><td>39.9%</td></tr>
+<tr><td>5</td><td>AUROPHARMA</td><td>495</td><td class="pos">+0.171</td><td>39.0%</td></tr>
+<tr><td>6</td><td>ICICIBANK</td><td>136</td><td class="neg">-0.049</td><td>39.0%</td></tr>
+<tr><td>7</td><td>HEROMOTOCO</td><td>320</td><td class="pos">+0.180</td><td>38.4%</td></tr>
+<tr><td>8</td><td>DLF</td><td>530</td><td class="pos">+0.149</td><td>38.3%</td></tr>
+<tr><td>9</td><td>M&amp;M</td><td>347</td><td class="pos">+0.053</td><td>38.3%</td></tr>
+<tr><td>10</td><td>DMART</td><td>308</td><td class="pos">+0.050</td><td>38.0%</td></tr>
+</table></div>
+
+<h3>orb</h3>
+<div class="strategy-table-wrap"><table>
+<tr><th>#</th><th>Symbol</th><th>Trades</th><th>Avg R</th><th>Win %</th></tr>
+<tr><td>1</td><td>HDFCBANK</td><td>419</td><td class="pos">+0.113</td><td>44.4%</td></tr>
+<tr><td>2</td><td>HINDUNILVR</td><td>484</td><td class="neg">-0.006</td><td>40.1%</td></tr>
+<tr><td>3</td><td>LICI</td><td>420</td><td class="pos">+0.142</td><td>40.0%</td></tr>
+<tr><td>4</td><td>ITC</td><td>473</td><td class="pos">+0.018</td><td>39.1%</td></tr>
+<tr><td>5</td><td>MARUTI</td><td>527</td><td class="pos">+0.067</td><td>39.1%</td></tr>
+<tr><td>6</td><td>NESTLEIND</td><td>448</td><td class="neg">-0.061</td><td>36.6%</td></tr>
+<tr><td>7</td><td>COALINDIA</td><td>537</td><td class="pos">+0.058</td><td>36.5%</td></tr>
+<tr><td>8</td><td>BAJFINANCE</td><td>494</td><td class="pos">+0.161</td><td>36.4%</td></tr>
+<tr><td>9</td><td>LINDEINDIA</td><td>525</td><td class="pos">+0.161</td><td>36.4%</td></tr>
+<tr><td>10</td><td>LT</td><td>531</td><td class="neg">-0.009</td><td>36.3%</td></tr>
+</table></div>
+
+<div class="callout">
+<b>Cross-cutting pattern:</b> LICI, HINDUNILVR, ITC, BRITANNIA, AXISBANK, BAJAJ-AUTO and DMART appear
+repeatedly near the top across multiple independently-built strategies. That recurrence across different
+entry logics is more meaningful than any single strategy's top-10 list — it suggests these specific stocks
+have a genuine structural tendency to trend cleanly, rather than one strategy happening to fit them by
+chance.
+</div>
+
+<h2>4. Caveats — read before acting on any of this</h2>
+<ul>
+<li><b>Costs matter more than most of the edges found here.</b> Round-trip trading cost (~0.047% of notional
+at ₹4L) is larger than the pooled average edge of most strategies tested. Only strategy/stock combinations
+with a clearly larger gross edge survive contact with real costs.</li>
+<li><b>Small samples inflate results.</b> This report only shows combinations with 100+ trades, but even
+those can look better than they'll perform going forward — several strategies produced dramatically
+different top performers when the dataset grew from 6 months to 5 years (e.g. DLF's <code>strong_rally</code>
+result fell from +1.115 avg R on 31 trades to +0.316 avg R once retested on 119).</li>
+<li><b>No true out-of-sample test has been run yet.</b> All of this was backtested and then reported on the
+same data — the responsible next step is validating the top candidates on a period the strategy wasn't
+tuned against.</li>
+<li><b>Paper-fill assumptions are optimistic.</b> Backtested fills assume execution at the exact modeled
+price; real slippage (confirmed once already this session, on an LT trade that overshot its stop within one
+bar) will be somewhat worse in practice.</li>
+<li>None of this has been validated with real capital. Treat every number here as a research finding, not a
+trading recommendation.</li>
+</ul>
+
+<div class="footer-note">
+Generated from the papertrader research pipeline (SQLite-backed, `papertrader research` CLI) —
+full per-trade detail queryable via run ids 44-58 in <code>data/papertrader.db</code>. Source markdown
+reports: <code>research/fiveyear-v1.md</code>, <code>research/confluence-v1.md</code>.
+</div>
+
+</body>
+</html>

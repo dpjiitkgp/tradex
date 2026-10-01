@@ -1,0 +1,27 @@
+[package]
+name = "kite-client"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+core-types = { workspace = true }
+reqwest = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+chrono-tz = { workspace = true }
+tracing = { workspace = true }
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+tokio = { workspace = true }
+csv = { workspace = true }
+tokio-tungstenite = { workspace = true }
+tokio-stream = { workspace = true }
+rustls = { version = "0.23", default-features = false, features = ["ring", "logging", "std", "tls12"] }
+webpki-roots = "0.26"
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "logging", "tls12"] }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }

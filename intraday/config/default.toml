@@ -1,0 +1,166 @@
+# AppConfig — field names match core-types::risk / core-types::time so each
+# milestone can parse this directly without renaming. [risk] is loaded by
+# paper-engine::config_loader as of M8.
+
+[risk]
+# Rupees allocated per position.
+capital_per_trade = 50000.0
+# How many positions can be open across the whole curated universe at once.
+max_concurrent_positions = 5
+# Hard stop-loss as a fraction of entry price (0.0025 = 0.25% underlying move,
+# ~1.25% capital loss at 5x MIS margin).
+risk_pct = 0.0025
+# Minimum reward:risk floor before the position switches from a hard stop to
+# a dynamic trailing exit (2.0 = must reach 2x risk_pct before trailing).
+min_reward_multiple = 2.0
+# One of: "percent_from_peak", "atr_multiple", "vwap_cross".
+trail_policy = "percent_from_peak"
+# Same fraction convention as risk_pct above (0.0015 = 0.15%), not a
+# percentage-point value. For atr_multiple this would instead be a
+# multiplier like 2.0 (chandelier-style).
+trail_param = 0.0015
+# Mandatory square-off cutoff, IST.
+eod_square_off = "15:15"
+# Optional hard cap on how long a position can stay open, minutes. 0 = no cap.
+max_hold_minutes = 0
+# Stop all new entries for the day after this fraction of allocated capital
+# is lost (e.g. 0.03 = -3%). 0 = disabled.
+daily_loss_cap_pct = 0.03
+# ATR period used for exit-side monitoring (trailing stop / vwap-cross
+# decisions), independent of whatever ATR period a strategy itself uses.
+exit_atr_period = 14
+
+[windows.opening]
+start = "09:15"
+end = "09:45"
+
+[windows.mid_morning]
+start = "09:45"
+end = "11:30"
+
+[windows.afternoon]
+start = "11:30"
+end = "15:15"
+
+[universe]
+seed = "nifty100"
+min_avg_turnover_cr = 50.0
+min_atr_pct = 0.8
+min_avg_volume = 500000
+lookback_days = 20
+max_symbols = 20
+# Symbols barred from every universe (research, backfill, screening) no matter
+# what the liquidity screen says — for instruments whose upstream data is known
+# bad, which nothing downstream can detect on its own.
+#
+# PIIND: Kite's historical API serves cross-contaminated minute bars for
+# instrument_token 6191105 — ~6.7% of its pre-2020 candles carry a foreign
+# price series (Rs50-96 interleaved with the real Rs800-1600 PI Industries
+# series). Re-fetching reproduces them byte for byte, so there is no clean
+# copy to recover. Left in, it dragged universe-wide aggregate Avg R from
+# +0.05 to -2.27 off 0.53% of trades.
+#
+# NIFTY 50 / INDIA VIX: indices, not tradeable equities. They are cached as
+# market-context series for research (see `backfill --indices`), but that
+# gave them ~722k bars each, which is enough to pass research's --min-bars
+# filter — so without this they get replayed as if they were stocks and
+# their "trades" pollute universe aggregates. Observed 2026-09-29, when a
+# run reported 251 instruments instead of 250.
+exclude = ["PIIND", "NIFTY 50", "INDIA VIX"]
+
+[strategies]
+# Which of the sections below actually get built. Comment one out of the
+# list (not the section itself) to A/B it out without losing its tuned
+# params.
+enabled = ["orb", "vwap_trend", "momentum_breakout"]
+
+[strategies.orb]
+# Bars of preceding volume the current bar is compared against.
+relative_volume_period = 10
+# Breakout bar's volume must be at least this many times the baseline.
+min_relative_volume = 1.5
+
+[strategies.vwap_trend]
+fast_ema = 9
+slow_ema = 21
+relative_volume_period = 10
+min_relative_volume = 1.2
+# Backtesting this strategy in isolation over 250 stocks / 6 months found
+# short-side signals winning meaningfully more often than long-side ones,
+# and signals in the first ~30-45 min of the window (09:45 start) notably
+# weaker than later ones. Both false by default here (unfiltered) —
+# research/highwinrate-v2-vwap-trend-filtered.md has the validated numbers
+# for turning these on.
+allow_long = true
+allow_short = true
+min_time_into_window_minutes = 0
+
+[strategies.momentum_breakout]
+atr_period = 14
+relative_volume_period = 10
+# Bar's own move must be at least this many multiples of ATR.
+min_atr_multiple = 1.5
+min_relative_volume = 2.0
+
+# Not in `enabled` above — available to tune/backtest, doesn't affect the
+# live daemon until added to that list. Mean-reversion counterpart to
+# vwap_trend: fades a price stretched far from VWAP instead of following a
+# crossover, aiming for a higher win rate at a smaller average win.
+[strategies.vwap_reversion]
+atr_period = 14
+# How many ATRs away from VWAP counts as "stretched" enough to fade.
+deviation_atr_multiple = 2.0
+
+# Not in `enabled` above — same status as vwap_reversion. Trend-continuation
+# counterpart to momentum_breakout: only trades an already-established EMA
+# trend on a pullback-and-resume, instead of timing a fresh breakout.
+[strategies.trend_pullback]
+fast_ema = 9
+slow_ema = 21
+relative_volume_period = 10
+min_relative_volume = 1.2
+
+# Not in `enabled` above — same status as the other new strategies. Full-
+# session (not window-scoped): three consecutive same-direction N-minute
+# candles each moving at least min_move_pct enters at the open of the next
+# candle. See TimeWindow::FullDay.
+[strategies.strong_rally]
+bar_minutes = 5
+min_streak = 3
+min_move_pct = 0.002
+
+# Not in `enabled` above — same status. Full-session: fires when the four
+# SMAs stack in order (avg(60m) < avg(45m) < avg(30m) < avg(15m) for an
+# accelerating uptrend, mirrored for a downtrend) — a stricter, four-
+# timeframe generalization of vwap_trend's two-EMA crossover.
+[strategies.ma_alignment]
+periods = [15, 30, 45, 60]
+
+# Not in `enabled` above — same status. Combined confluence: only signals
+# when vwap_trend's EMA-crossover trigger AND ma_alignment's SMA-stack
+# agreement both hold on the same bar — testing whether two independently-
+# validated signals stacked together screen out more false starts than
+# either alone.
+[strategies.trend_confluence]
+fast_ema = 9
+slow_ema = 21
+relative_volume_period = 10
+min_relative_volume = 1.2
+ma_periods = [15, 30, 45, 60]
+
+# Standalone market-data collection (`papertrader collect`) — deliberately
+# separate from [universe] above, which governs the *trading* universe.
+# This is intentionally broader and independent of paper trading: it keeps
+# recording regardless of what's actually being traded, so there's a real
+# dataset to go back to later.
+[collector]
+seed = "nifty250"
+include_india_vix = true
+include_nifty_futures = true
+include_banknifty_futures = true
+
+[broker.kite]
+credentials_path = "secrets/credentials.toml"
+
+[storage]
+db_path = "data/papertrader.db"

@@ -1,0 +1,272 @@
+{
+  "LENSKART": {
+    "baseline_r": 0.435,
+    "tuned_lookback": 20,
+    "tuned_mrm": 1.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.4922,
+    "tuned_win": 61.5,
+    "tuned_n": 39
+  },
+  "WAAREEENER": {
+    "baseline_r": 0.329,
+    "tuned_lookback": 15,
+    "tuned_mrm": 6.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.4242,
+    "tuned_win": 50.0,
+    "tuned_n": 80
+  },
+  "INDUSINDBK": {
+    "baseline_r": 0.3092,
+    "tuned_lookback": 15,
+    "tuned_mrm": 10.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.3784,
+    "tuned_win": 52.7,
+    "tuned_n": 292
+  },
+  "ITCHOTELS": {
+    "baseline_r": 0.3012,
+    "tuned_lookback": 20,
+    "tuned_mrm": 1.0,
+    "tuned_trail": 0.015,
+    "tuned_r": 0.3218,
+    "tuned_win": 60.3,
+    "tuned_n": 68
+  },
+  "IREDA": {
+    "baseline_r": 0.2958,
+    "tuned_lookback": 20,
+    "tuned_mrm": 10.0,
+    "tuned_trail": 0.015,
+    "tuned_r": 0.4288,
+    "tuned_win": 55.0,
+    "tuned_n": 120
+  },
+  "BAJAJHFL": {
+    "baseline_r": 0.274,
+    "tuned_lookback": 30,
+    "tuned_mrm": 3.0,
+    "tuned_trail": 0.015,
+    "tuned_r": 0.3559,
+    "tuned_win": 68.8,
+    "tuned_n": 109
+  },
+  "DIXON": {
+    "baseline_r": 0.2735,
+    "tuned_lookback": 15,
+    "tuned_mrm": 6.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.3239,
+    "tuned_win": 48.9,
+    "tuned_n": 352
+  },
+  "NAUKRI": {
+    "baseline_r": 0.2576,
+    "tuned_lookback": 20,
+    "tuned_mrm": 10.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.2621,
+    "tuned_win": 48.7,
+    "tuned_n": 357
+  },
+  "APARINDS": {
+    "baseline_r": 0.2397,
+    "tuned_lookback": 10,
+    "tuned_mrm": 3.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.2525,
+    "tuned_win": 49.8,
+    "tuned_n": 454
+  },
+  "DMART": {
+    "baseline_r": 0.237,
+    "tuned_lookback": 20,
+    "tuned_mrm": 1.0,
+    "tuned_trail": 0.015,
+    "tuned_r": 0.2705,
+    "tuned_win": 51.8,
+    "tuned_n": 390
+  },
+  "NLCINDIA": {
+    "baseline_r": 0.2361,
+    "tuned_lookback": 30,
+    "tuned_mrm": 10.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.271,
+    "tuned_win": 49.6,
+    "tuned_n": 466
+  },
+  "JIOFIN": {
+    "baseline_r": 0.224,
+    "tuned_lookback": 20,
+    "tuned_mrm": 1.0,
+    "tuned_trail": 0.0075,
+    "tuned_r": 0.2631,
+    "tuned_win": 54.5,
+    "tuned_n": 134
+  },
+  "LICI": {
+    "baseline_r": 0.224,
+    "tuned_lookback": 15,
+    "tuned_mrm": 1.0,
+    "tuned_trail": 0.015,
+    "tuned_r": 0.2629,
+    "tuned_win": 64.9,
+    "tuned_n": 194
+  },
+  "HAL": {
+    "baseline_r": 0.2196,
+    "tuned_lookback": 30,
+    "tuned_mrm": 3.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.2396,
+    "tuned_win": 52.4,
+    "tuned_n": 393
+  },
+  "JSWINFRA": {
+    "baseline_r": 0.2162,
+    "tuned_lookback": 30,
+    "tuned_mrm": 1.0,
+    "tuned_trail": 0.0075,
+    "tuned_r": 0.3361,
+    "tuned_win": 61.2,
+    "tuned_n": 121
+  },
+  "AWL": {
+    "baseline_r": 0.2157,
+    "tuned_lookback": 20,
+    "tuned_mrm": 6.0,
+    "tuned_trail": 0.0075,
+    "tuned_r": 0.2389,
+    "tuned_win": 58.6,
+    "tuned_n": 222
+  },
+  "MAZDOCK": {
+    "baseline_r": 0.2136,
+    "tuned_lookback": 15,
+    "tuned_mrm": 10.0,
+    "tuned_trail": 0.015,
+    "tuned_r": 0.3252,
+    "tuned_win": 50.3,
+    "tuned_n": 300
+  },
+  "NYKAA": {
+    "baseline_r": 0.2117,
+    "tuned_lookback": 10,
+    "tuned_mrm": 3.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.342,
+    "tuned_win": 52.4,
+    "tuned_n": 225
+  },
+  "PNB": {
+    "baseline_r": 0.2104,
+    "tuned_lookback": 15,
+    "tuned_mrm": 10.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.2527,
+    "tuned_win": 49.6,
+    "tuned_n": 405
+  },
+  "LTM": {
+    "baseline_r": 0.1795,
+    "tuned_lookback": 30,
+    "tuned_mrm": 3.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.2413,
+    "tuned_win": 51.6,
+    "tuned_n": 312
+  },
+  "VOLTAS": {
+    "baseline_r": 0.1744,
+    "tuned_lookback": 15,
+    "tuned_mrm": 3.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.1939,
+    "tuned_win": 48.5,
+    "tuned_n": 305
+  },
+  "TATAELXSI": {
+    "baseline_r": 0.1734,
+    "tuned_lookback": 15,
+    "tuned_mrm": 6.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.2259,
+    "tuned_win": 51.0,
+    "tuned_n": 414
+  },
+  "APOLLOTYRE": {
+    "baseline_r": 0.1729,
+    "tuned_lookback": 10,
+    "tuned_mrm": 3.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.1945,
+    "tuned_win": 48.4,
+    "tuned_n": 349
+  },
+  "BANKINDIA": {
+    "baseline_r": 0.1708,
+    "tuned_lookback": 30,
+    "tuned_mrm": 6.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.215,
+    "tuned_win": 47.9,
+    "tuned_n": 438
+  },
+  "HEROMOTOCO": {
+    "baseline_r": 0.17,
+    "tuned_lookback": 15,
+    "tuned_mrm": 10.0,
+    "tuned_trail": 0.0075,
+    "tuned_r": 0.2374,
+    "tuned_win": 51.5,
+    "tuned_n": 305
+  },
+  "ATGL": {
+    "baseline_r": 0.1668,
+    "tuned_lookback": 20,
+    "tuned_mrm": 6.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.2009,
+    "tuned_win": 50.0,
+    "tuned_n": 408
+  },
+  "COCHINSHIP": {
+    "baseline_r": 0.1666,
+    "tuned_lookback": 20,
+    "tuned_mrm": 10.0,
+    "tuned_trail": 0.015,
+    "tuned_r": 0.1911,
+    "tuned_win": 52.9,
+    "tuned_n": 478
+  },
+  "RELIANCE": {
+    "baseline_r": 0.1659,
+    "tuned_lookback": 20,
+    "tuned_mrm": 6.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.1759,
+    "tuned_win": 53.7,
+    "tuned_n": 296
+  },
+  "LINDEINDIA": {
+    "baseline_r": 0.1647,
+    "tuned_lookback": 20,
+    "tuned_mrm": 10.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.1667,
+    "tuned_win": 49.5,
+    "tuned_n": 457
+  },
+  "LLOYDSME": {
+    "baseline_r": 0.1622,
+    "tuned_lookback": 15,
+    "tuned_mrm": 3.0,
+    "tuned_trail": 0.0025,
+    "tuned_r": 0.2111,
+    "tuned_win": 50.3,
+    "tuned_n": 161
+  }
+}

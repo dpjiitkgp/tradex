@@ -1,0 +1,50 @@
+# Copy to config/alerts.toml and fill in. Both halves are optional and
+# independent, but a live session wants BOTH — they cover different failures.
+#
+#   channel        the process reporting something it noticed.
+#                  Dies with the process.
+#   heartbeat_url  a dead-man's switch: the ABSENCE of pings raises the alarm,
+#                  from a service running somewhere else. This is the half
+#                  that survives the process crashing, the Mac going to sleep,
+#                  and the power going out.
+#
+# Neither is a secret in the credentials sense, but the ntfy topic and the
+# Telegram token both grant read access to your alerts, so config/alerts.toml
+# is gitignored. This example file is not.
+
+# --- Push channel: pick ONE of the three -------------------------------
+
+# ntfy.sh — no account, no setup. Install the "ntfy" app, subscribe to a
+# topic, and use it here. The topic is the ONLY secret, so make it long and
+# random (e.g. `openssl rand -hex 16`) — anyone who guesses it reads your
+# alerts. Priority "urgent" is sent, which breaks through a phone's silent
+# mode.
+[channel]
+kind = "ntfy"
+url = "https://ntfy.sh/papertrader-CHANGE-ME-TO-SOMETHING-RANDOM"
+
+# Telegram — more private: both the token and the chat id must be known.
+# Create a bot via @BotFather, message it once, then find your chat id at
+# https://api.telegram.org/bot<TOKEN>/getUpdates
+# [channel]
+# kind = "telegram"
+# bot_token = "123456:ABC-DEF..."
+# chat_id = "987654321"
+
+# Anything else that accepts a POST with a plain-text body.
+# [channel]
+# kind = "webhook"
+# url = "https://example.com/hook"
+
+# --- Dead-man's switch -------------------------------------------------
+#
+# healthchecks.io has a free tier that does exactly this. Create a check, set
+# its period to 1 minute and its grace period to ~5 minutes, point it at your
+# phone (it can notify via ntfy, Telegram, email or push), and paste its ping
+# URL here. The live loop pings it every 60s; when the pings stop, the service
+# alerts you.
+#
+# Grace period matters: too short and a single dropped request pages you, too
+# long and you find out late. ~5 minutes is a reasonable starting point for a
+# 60-second ping.
+heartbeat_url = "https://hc-ping.com/YOUR-CHECK-UUID"

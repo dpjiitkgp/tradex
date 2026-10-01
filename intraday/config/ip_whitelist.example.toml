@@ -1,0 +1,24 @@
+# Copy to `ip_whitelist.toml` (gitignored — your egress address is personal
+# network information) and fill in the address you entered at
+# developers.kite.trade -> Profile -> IP Whitelist.
+#
+# Kite has no API for reading or setting the whitelist, so this file is a
+# hand-maintained mirror of the console, and `live-trade run --live` refuses
+# to start when this machine's egress address is not listed here.
+#
+# Rules the console enforces:
+#   * up to 2 addresses
+#   * ONE change per calendar week
+#   * IPv4 only in practice — see crates/kite-client/src/rest.rs for why the
+#     client is bound to IPv4, and what an IPv6 egress looks like when it goes
+#     wrong (orders rejected, read calls fine)
+#
+# When the address changes: update it in the console FIRST, then mirror it
+# here. Doing it in this order means a stale file fails closed (the session
+# refuses to start) rather than open (it starts and every order is rejected).
+#
+# On dynamic home broadband the address survives a reboot but not a line
+# re-dial, which is why this check exists at all. A static IP or a cloud VM
+# would retire it.
+ips = ["203.0.113.42"]
+last_updated = "2026-01-01"

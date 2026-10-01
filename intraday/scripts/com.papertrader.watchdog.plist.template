@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Runs scripts/watchdog.sh every minute. The script decides whether the
+  current time is inside a trading session, so this fires all day and mostly
+  exits immediately — cheaper and far more reliable than encoding the market
+  calendar into a launchd schedule.
+
+  launchd needs absolute paths, so this is a template. __REPO__ is the
+  absolute path to the `intraday` directory.
+
+  Install:
+    sed "s|__REPO__|$(pwd)|g" scripts/com.papertrader.watchdog.plist.template \
+      > ~/Library/LaunchAgents/com.papertrader.watchdog.plist
+    launchctl load ~/Library/LaunchAgents/com.papertrader.watchdog.plist
+
+  Remove:
+    launchctl unload ~/Library/LaunchAgents/com.papertrader.watchdog.plist
+
+  NOTE: launchd sleeps when the Mac does, so this cannot report a machine that
+  is asleep or powered off. It catches a crashed or killed process. Coverage
+  for the machine itself needs an off-machine dead-man's switch — see
+  config/alerts.example.toml.
+
+  KNOWN GAP: this checks that the process exists, not that it is doing
+  anything. A collector that is alive but has stopped writing candles passes
+  this check. See docs/operations.md.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.papertrader.watchdog</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>__REPO__/scripts/watchdog.sh</string>
+    </array>
+
+    <!-- The script resolves its own paths from here, and the trading
+         processes it may restart need the repo as their working directory. -->
+    <key>WorkingDirectory</key>
+    <string>__REPO__</string>
+
+    <key>StartInterval</key>
+    <integer>60</integer>
+
+    <!-- launchd hands a job a near-empty environment, so anything the script
+         shells out to has to be on this PATH. -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>__REPO__/data/watchdog/launchd.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>__REPO__/data/watchdog/launchd.err.log</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>

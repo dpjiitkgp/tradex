@@ -1,0 +1,24 @@
+# Intraday-specific rules. The root .gitignore repeats the secret paths
+# below on purpose — these files must never reach a public remote, and one
+# of the two files being edited carelessly should not be enough to leak them.
+
+# Telegram bot token / ntfy topic. config/alerts.example.toml is the template.
+config/alerts.toml
+
+# This machine's egress IP, mirrored by hand from the Kite console.
+# config/ip_whitelist.example.toml is the template.
+config/ip_whitelist.toml
+
+# Kite credentials: api_key, api_secret, client id, password, TOTP seed.
+secrets/*
+!secrets/.gitkeep
+!secrets/credentials.example.toml
+
+# Minute-candle cache, trade database, run logs.
+data/
+!data/.gitkeep
+
+# Daily bars, rebuilt by research/swing/build_daily.py from the minute cache.
+research/swing/data/
+
+target/
